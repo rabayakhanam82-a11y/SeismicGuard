@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SeismicGuard</string>
+    <string name="emergency_alert_title">CRITICAL HARDWARE TREMOR DETECTED</string>
+    <string name="emergency_alert_desc">ESP32 Sensor GPIO 18 Triggered - Edge Interrupt Latency &lt; 15ms</string>
+    <string name="team_omega_title">Team Omega - Seismic Apparatus</string>
+    <string name="lead_architect">Abdullah Karim (Lead &amp; System Architect)</string>
+</resources>

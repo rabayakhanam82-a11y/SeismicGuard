@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "19503922262",
+    "firebase_url": "https://seismic-guard-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "seismic-guard",
+    "storage_bucket": "seismic-guard.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:19503922262:android:9f8519012f0fb3fb8fcff7",
+        "android_client_info": {
+          "package_name": "com.aistudio.seismicguard.omega"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZiNlvx-bIKQttJFs7qAw7Gep452yWs-c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

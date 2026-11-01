@@ -1,0 +1,6 @@
+{
+  "name": "SeismicGuard",
+  "description": "IoT Seismic & Hardware Tremor Command Center & Emergency Override Siren System for Team Omega",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

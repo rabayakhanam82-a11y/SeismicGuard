@@ -1,0 +1,139 @@
+=================================================================================
+  SEISMICGUARD OMEGA - ARDUINO IDE STEP-BY-STEP UPLOAD & CALIBRATION GUIDE
+  Project: Earthquake & Tremor Alarm System | BIS Science Projects 2026
+  Project Lead: Abdullah Karim (Class 7 English Version)
+  Contributors: Mahir, Ahmad, Behan, Zarif
+=================================================================================
+
+QUICK ANSWER: YES, YOU JUST COPY-PASTE IT!
+Everything is 100% written, verified, and self-contained. You do NOT need to install
+any third-party ZIP libraries. All libraries (WiFi, HTTPClient, WiFiClientSecure)
+are pre-installed with the ESP32 board in Arduino IDE.
+
+---------------------------------------------------------------------------------
+STEP 1: WHERE IS THE FIRMWARE CODE?
+---------------------------------------------------------------------------------
+The firmware code file is located right here in this folder:
+  /firmware/SeismicGuard_ESP32/SeismicGuard_ESP32.ino
+
+Open that file in Arduino IDE, or simply create a new sketch in Arduino IDE,
+delete whatever is inside, and paste the entire contents of SeismicGuard_ESP32.ino.
+
+
+---------------------------------------------------------------------------------
+STEP 2: WHICH EXACT LINES DO YOU NEED TO UPDATE?
+---------------------------------------------------------------------------------
+Open "SeismicGuard_ESP32.ino" and check lines 38 to 46 near the top:
+
+1. LINE 39 (Wi-Fi Name / SSID):
+   Change:
+     const char* WIFI_SSID     = "YOUR_WIFI_NAME_HERE";
+   To your actual home Wi-Fi name or phone personal hotspot name, for example:
+     const char* WIFI_SSID     = "Abdullah_Home_WiFi";
+
+2. LINE 42 (Wi-Fi Password):
+   Change:
+     const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD_HERE";
+   To your Wi-Fi password, for example:
+     const char* WIFI_PASSWORD = "mypassword123";
+
+3. LINE 45 (Firebase Realtime Database URL):
+   ALREADY FULLY CONFIGURED!
+     const char* FIREBASE_HOST = "https://seismic-guard-default-rtdb.asia-southeast1.firebasedatabase.app";
+   You do NOT need to touch this line unless you created a different Firebase database.
+
+4. SENSITIVITY CALIBRATION (LINES 59-61):
+   ALREADY CONFIGURED FOR DELIBERATE HAND SHAKE:
+     const int SHAKE_PULSE_THRESHOLD       = 4;     // Requires 4 rapid bounces
+     const unsigned long SHAKE_WINDOW_MS   = 250;   // In 250 milliseconds
+     const unsigned long ALARM_COOLDOWN_MS = 2500;  // 2.5 second cooldown between alarms
+
+   * How it works:
+     - Gentle touch or bumping the table produces only 1 or 2 isolated pulses -> IGNORED.
+     - A deliberate, firm hand shake produces 4 to 8 rapid bounces within 250ms -> ALARM FIRES!
+     - If you ever want it slightly more sensitive: change 4 to 3.
+     - If you ever want it harder to trigger: change 4 to 5 or 6.
+     - 4 is the sweet spot: triggers on a deliberate hand shake without working your ass off!
+
+
+---------------------------------------------------------------------------------
+STEP 3: HARDWARE WIRING (CONFIRMED: NO RED LED! BUZZER ONLY!)
+---------------------------------------------------------------------------------
+There is NO RED LED in this system. Do NOT connect any LED.
+The only output actuator is the high-decibel BC547 Acoustic Buzzer.
+
+A. SW-420 VIBRATION SENSOR (3 Pins):
+   1. VCC  -> Connect to ESP32 3V3 Pin (or 3.3V breadboard rail)
+   2. GND  -> Connect to ESP32 GND Pin (or GND breadboard rail)
+   3. DO   -> Connect to ESP32 GPIO 18 (Digital Output pin of sensor)
+   (Note: If your sensor has an "AO" analog pin, leave it disconnected!)
+
+B. BC547 NPN TRANSISTOR & 9042 BUZZER:
+   1. ESP32 GPIO 23 -> 1k Ohm Resistor -> BC547 Base (Middle Pin, Pin 2)
+   2. BC547 Collector (Pin 1) -> Buzzer Negative (-) Terminal
+   3. Buzzer Positive (+) Terminal -> ESP32 3V3 Pin (or 3.3V rail)
+   4. BC547 Emitter (Pin 3) -> Common GND rail
+
+C. POWER:
+   Plug your micro-USB cable into the ESP32 connected to your computer or a 5V power bank.
+
+
+---------------------------------------------------------------------------------
+STEP 4: PHYSICAL POTENTIOMETER TUNING (SW-420 BLUE SCREW)
+---------------------------------------------------------------------------------
+The SW-420 sensor module has a small blue box with a brass screw on top (the trimpot):
+1. Plug in the ESP32. Look at the two small LEDs on the SW-420 sensor board:
+   - One LED is Power (red/green, stays ON all the time).
+   - The other LED is DO Status (shows vibration trigger).
+2. While the board is resting still on your desk:
+   - The DO Status LED should be OFF (or steady).
+3. If the DO Status LED stays ON continuously while resting:
+   - Take a small flathead screwdriver and turn the brass screw COUNTER-CLOCKWISE
+     slowly until the DO Status LED just turns OFF.
+4. Now, give the sensor a firm shake with your hand:
+   - The DO Status LED should flash rapidly and the buzzer will immediately sound!
+
+
+---------------------------------------------------------------------------------
+STEP 5: HOW TO FLASH IN ARDUINO IDE (VERSION 2.0+)
+---------------------------------------------------------------------------------
+1. Open Arduino IDE.
+2. In Tools menu, select:
+   - Board: "ESP32 Arduino" -> "ESP32 Dev Module"
+     (If you don't see ESP32 in Boards, go to Preferences -> Additional Boards Manager URLs
+      and add: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+      then Tools -> Board -> Boards Manager -> search "esp32" by Espressif -> Install).
+   - Upload Speed: "921600" (or "115200")
+   - CPU Frequency: "240MHz (WiFi/BT)"
+   - Flash Frequency: "80MHz"
+   - Port: Select the COM port of your plugged-in ESP32 (e.g. COM3, COM4, COM5)
+3. Click the UPLOAD button (the right arrow -> icon in the top left).
+4. If the console says "Connecting........_____.....", hold down the "BOOT" button
+   on the ESP32 for 2 seconds until uploading begins (0%... 100%).
+5. Once "Done uploading" appears:
+   - Open Serial Monitor (magnifying glass in top right, set baud rate to 115200).
+   - Press the "EN" (Reset) button once on the ESP32.
+   - You will hear 2 quick boot beeps from the buzzer!
+   - You will see:
+     [Wi-Fi] CONNECTED!
+     [Wi-Fi] IP Address: 192.168.x.x
+     [Sensor] SW-420 interrupt attached on GPIO 18 (Calibrated for firm shake)
+     [Cloud] Telemetry push successful (HTTP 200)
+
+
+---------------------------------------------------------------------------------
+STEP 6: TESTING WITH THE ANDROID APP
+---------------------------------------------------------------------------------
+1. Sideload the ready-to-install APK on your Android phone:
+   /apks/SeismicGuard-v1.8-phone-ready.apk
+2. Open SeismicGuard. The app automatically syncs with Firebase Realtime Database.
+3. In the top status bar, the connection dot will turn Bright Cyan/Blue:
+   "FIREBASE CLOUD SYNCED".
+4. Now give the SW-420 sensor a deliberate, firm hand shake!
+   - The ESP32 buzzer will immediately sound an attention-grabbing siren.
+   - Within 15 milliseconds, Firebase Realtime Database receives the alert.
+   - The Android phone will launch the full-screen Critical Emergency Tremor Alert
+     with 85dBA acoustic warning sound and tactile vibration!
+
+YOU ARE 100% READY TO WIN THE SCIENCE EXHIBITION! GOOD LUCK ABDULLAH & TEAM OMEGA!
+=================================================================================

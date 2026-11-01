@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>SeismicGuard Global Tectonic & Google GIS</title>
+    <link rel="stylesheet" href="leaflet.css" />
+    <script src="leaflet.js"></script>
+    <script src="world_countries.js"></script>
+    <script src="tectonic_plates.js"></script>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: #0A0F1D;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+            background: #0A0F1D;
+        }
+
+        /* Leaflet Controls & Custom Styling */
+        .leaflet-bar {
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            border-radius: 10px !important;
+            overflow: hidden;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.5) !important;
+        }
+        .leaflet-bar a {
+            background-color: #1E293B !important;
+            color: #F8FAFC !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+            width: 38px !important;
+            height: 38px !important;
+            line-height: 38px !important;
+            font-size: 18px !important;
+        }
+        .leaflet-bar a:hover {
+            background-color: #334155 !important;
+            color: #38BDF8 !important;
+        }
+        .leaflet-control-attribution {
+            background: rgba(15, 23, 42, 0.85) !important;
+            color: #94A3B8 !important;
+            font-size: 9px !important;
+            padding: 2px 6px !important;
+            border-radius: 4px !important;
+        }
+        .leaflet-control-attribution a {
+            color: #38BDF8 !important;
+        }
+
+        /* Popup styling */
+        .leaflet-popup-content-wrapper {
+            background: #0F172A !important;
+            color: #FFFFFF !important;
+            border-radius: 14px !important;
+            border: 1px solid #38BDF8 !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8) !important;
+            padding: 4px !important;
+        }
+        .leaflet-popup-tip {
+            background: #0F172A !important;
+        }
+        .popup-title {
+            font-weight: 700;
+            font-size: 13px;
+            color: #F8FAFC;
+            margin-bottom: 4px;
+        }
+        .popup-meta {
+            font-size: 11px;
+            color: #94A3B8;
+            line-height: 1.5;
+        }
+        .popup-mag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 12px;
+            color: #FFFFFF;
+            margin-bottom: 6px;
+        }
+
+        /* Custom User Pulse Pin */
+        .user-pulse-container {
+            position: relative;
+            width: 28px;
+            height: 28px;
+        }
+        .user-pulse-ring {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0, 180, 216, 0.45);
+            animation: pulse-animation 2s infinite;
+        }
+        .user-pulse-core {
+            position: absolute;
+            top: 7px;
+            left: 7px;
+            width: 14px;
+            height: 14px;
+            background: #00B4D8;
+            border: 2.5px solid #FFFFFF;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #00B4D8;
+        }
+
+        @keyframes pulse-animation {
+            0% { transform: scale(0.6); opacity: 1; }
+            100% { transform: scale(2.4); opacity: 0; }
+        }
+
+        .country-tooltip {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid #38BDF8;
+            color: #FFFFFF;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 6px;
+            padding: 2px 6px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script>
+        var currentLat = 23.8103;
+        var currentLon = 90.4125;
+        var currentLabel = "Gazipur / Dhaka Station";
+
+        // Initialize Leaflet Map with touch and zoom optimizations
+        var map = L.map('map', {
+            zoomControl: false,
+            minZoom: 2,
+            maxZoom: 19,
+            worldCopyJump: true,
+            touchZoom: true,
+            doubleClickZoom: true,
+            scrollWheelZoom: true,
+            tap: false
+        }).setView([currentLat, currentLon], 6);
+
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+        // --- REAL MAP TILE LAYERS ---
+        // 1. Google Maps Hybrid (Satellite Imagery + City Labels & Highway Overlay)
+        var tileLayerGoogleHybrid = L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+            attribution: 'Tiles &copy; Google Maps',
+            subdomains: ['0', '1', '2', '3'],
+            maxZoom: 20
+        });
+
+        // 2. Google Maps Standard Roadmap (Streets, Towns, Road Network)
+        var tileLayerGoogleRoadmap = L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+            attribution: 'Tiles &copy; Google Maps',
+            subdomains: ['0', '1', '2', '3'],
+            maxZoom: 20
+        });
+
+        // 3. Google Maps Topographic Terrain
+        var tileLayerGoogleTerrain = L.tileLayer('https://mt{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+            attribution: 'Tiles &copy; Google Maps',
+            subdomains: ['0', '1', '2', '3'],
+            maxZoom: 20
+        });
+
+        // 4. Carto Voyager Dark GIS Layer
+        var tileLayerCarto = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap, CartoDB',
+            maxZoom: 19
+        });
+
+        // 5. OpenStreetMap Standard
+        var tileLayerOsm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors',
+            maxZoom: 19
+        });
+
+        // Add Google Hybrid by default — real satellite + road map!
+        tileLayerGoogleHybrid.addTo(map);
+
+        // Window resize and auto-invalidation to ensure Leaflet never displays a blank canvas
+        window.addEventListener('resize', function() {
+            if (map) map.invalidateSize();
+        });
+        setTimeout(function() { if (map) map.invalidateSize(); }, 200);
+        setTimeout(function() { if (map) map.invalidateSize(); }, 700);
+
+        // 1. Offline World Countries Layer (180 Countries bundled)
+        var countriesLayer;
+        if (typeof WORLD_COUNTRIES !== 'undefined' && WORLD_COUNTRIES.features) {
+            countriesLayer = L.geoJSON(WORLD_COUNTRIES, {
+                style: function(feature) {
+                    var isBgd = feature.id === "BGD" || (feature.properties && feature.properties.name === "Bangladesh");
+                    return {
+                        fillColor: isBgd ? "#0284C7" : "#1B2A4A",
+                        weight: isBgd ? 2.5 : 1,
+                        opacity: isBgd ? 0.95 : 0.6,
+                        color: isBgd ? "#38BDF8" : "#334E68",
+                        fillOpacity: isBgd ? 0.6 : 0.35
+                    };
+                },
+                onEachFeature: function(feature, layer) {
+                    var name = feature.properties ? feature.properties.name : feature.id;
+                    layer.bindTooltip(name, {
+                        sticky: true,
+                        className: 'country-tooltip'
+                    });
+                }
+            }).addTo(map);
+        }
+
+        // 2. Global Tectonic Plate Boundaries Layer (241 boundaries bundled)
+        var tectonicLayer;
+        if (typeof TECTONIC_PLATES !== 'undefined' && TECTONIC_PLATES.features) {
+            tectonicLayer = L.geoJSON(TECTONIC_PLATES, {
+                style: {
+                    color: "#FF5722",
+                    weight: 3,
+                    opacity: 0.9,
+                    dashArray: "6, 6"
+                },
+                onEachFeature: function(feature, layer) {
+                    var plateName = (feature.properties && feature.properties.Name) ? feature.properties.Name : "Tectonic Plate Boundary";
+                    layer.bindPopup("<div class='popup-title'>" + plateName + "</div><div class='popup-meta'>Global fault line & subduction margin</div>");
+                }
+            }).addTo(map);
+        }
+
+        // 3. High-Detail Regional Bangladesh Fault Lines
+        var regionalFaultsGroup = L.layerGroup().addTo(map);
+
+        // Madhupur Tract Fault
+        var madhupurLine = L.polyline([[24.5, 89.9], [24.1, 90.3], [23.9, 90.5]], {
+            color: '#EF4444',
+            weight: 4,
+            opacity: 0.95
+        }).addTo(regionalFaultsGroup).bindPopup("<div class='popup-title'>Madhupur Tract Fault</div><div class='popup-meta'>Active intra-plate fault zone passing near Gazipur/Dhaka</div>");
+
+        // Dauki Fault Line
+        var daukiLine = L.polyline([[25.2, 90.0], [25.18, 91.5], [25.12, 92.5]], {
+            color: '#F59E0B',
+            weight: 4,
+            opacity: 0.95
+        }).addTo(regionalFaultsGroup).bindPopup("<div class='popup-title'>Dauki Fault Line</div><div class='popup-meta'>Northern thrust boundary between Shillong Plateau and Bengal Basin</div>");
+
+        // Chittagong-Tripura Fold Belt
+        var chittagongLine = L.polyline([[23.8, 92.2], [22.8, 92.0], [21.5, 92.2]], {
+            color: '#00B4D8',
+            weight: 4,
+            opacity: 0.95
+        }).addTo(regionalFaultsGroup).bindPopup("<div class='popup-title'>Chittagong-Tripura Fold Belt</div><div class='popup-meta'>Active subduction compression arc along the eastern border</div>");
+
+        // 4. User Station Pin (Glowing Radar Pulse)
+        var userIcon = L.divIcon({
+            className: 'custom-user-pin',
+            html: '<div class="user-pulse-container"><div class="user-pulse-ring"></div><div class="user-pulse-core"></div></div>',
+            iconSize: [28, 28],
+            iconAnchor: [14, 14]
+        });
+
+        var userMarker = L.marker([currentLat, currentLon], { icon: userIcon, zIndexOffset: 1000 }).addTo(map)
+            .bindPopup("<div class='popup-title'>" + currentLabel + "</div><div class='popup-meta'>Your Station & IoT Seismic Node</div>");
+
+        // 5. Earthquakes Marker Group
+        var quakesGroup = L.layerGroup().addTo(map);
+
+        function renderEarthquakes(quakesList) {
+            quakesGroup.clearLayers();
+            if (!quakesList || !quakesList.length) return;
+
+            quakesList.forEach(function(q) {
+                var mag = q.mag || q.magnitude || 2.5;
+                var color = mag >= 5.5 ? "#EF4444" : (mag >= 4.0 ? "#F59E0B" : "#10B981");
+                var radius = Math.max(mag * 3.4, 8);
+
+                var circle = L.circleMarker([q.lat || q.latitude, q.lon || q.longitude], {
+                    radius: radius,
+                    fillColor: color,
+                    color: "#FFFFFF",
+                    weight: 2,
+                    opacity: 0.95,
+                    fillOpacity: 0.75
+                });
+
+                var place = q.place || "Seismic Epicenter";
+                var dist = Math.round(q.dist || q.distanceKmFromUser || 0);
+                var depth = Math.round(q.depth || q.depthKm || 10);
+
+                var popupHtml = "<div class='popup-mag' style='background:" + color + "'>M " + mag.toFixed(1) + "</div>" +
+                                "<div class='popup-title'>" + place + "</div>" +
+                                "<div class='popup-meta'>" +
+                                "<b>Distance:</b> " + dist + " km away<br>" +
+                                "<b>Depth:</b> " + depth + " km<br>" +
+                                "<b>Coordinates:</b> " + (q.lat || q.latitude).toFixed(3) + "°, " + (q.lon || q.longitude).toFixed(3) + "°" +
+                                "</div>";
+
+                circle.bindPopup(popupHtml);
+                circle.on('click', function() {
+                    if (window.AndroidBridge && window.AndroidBridge.onQuakeSelected) {
+                        window.AndroidBridge.onQuakeSelected(q.id || "", mag, place, dist);
+                    }
+                });
+
+                quakesGroup.addLayer(circle);
+            });
+        }
+
+        // Bridge functions for Android WebView
+        function updateUserStation(lat, lon, label) {
+            currentLat = lat;
+            currentLon = lon;
+            currentLabel = label || currentLabel;
+            if (userMarker) {
+                userMarker.setLatLng([lat, lon]);
+                userMarker.setPopupContent("<div class='popup-title'>" + currentLabel + "</div><div class='popup-meta'>Your Station & IoT Seismic Node</div>");
+            }
+        }
+
+        function flyToPreset(lat, lon, zoom) {
+            map.flyTo([lat, lon], zoom, { duration: 1.5 });
+        }
+
+        function setTileLayer(type) {
+            map.removeLayer(tileLayerGoogleHybrid);
+            map.removeLayer(tileLayerGoogleRoadmap);
+            map.removeLayer(tileLayerGoogleTerrain);
+            map.removeLayer(tileLayerCarto);
+            map.removeLayer(tileLayerOsm);
+
+            if (type === 'google_streets') {
+                tileLayerGoogleRoadmap.addTo(map);
+            } else if (type === 'google_terrain') {
+                tileLayerGoogleTerrain.addTo(map);
+            } else if (type === 'carto') {
+                tileLayerCarto.addTo(map);
+            } else if (type === 'osm') {
+                tileLayerOsm.addTo(map);
+            } else if (type === 'offline_atlas') {
+                // Pure vector mode, no raster tile downloads needed
+                if (countriesLayer) {
+                    countriesLayer.setStyle(function(feature) {
+                        var isBgd = feature.id === "BGD" || (feature.properties && feature.properties.name === "Bangladesh");
+                        return {
+                            fillColor: isBgd ? "#0284C7" : "#1B2A4A",
+                            weight: isBgd ? 2.5 : 1.2,
+                            opacity: 0.95,
+                            color: isBgd ? "#38BDF8" : "#334E68",
+                            fillOpacity: isBgd ? 0.75 : 0.6
+                        };
+                    });
+                }
+            } else {
+                tileLayerGoogleHybrid.addTo(map);
+            }
+
+            if (type !== 'offline_atlas' && countriesLayer) {
+                countriesLayer.setStyle(function(feature) {
+                    var isBgd = feature.id === "BGD" || (feature.properties && feature.properties.name === "Bangladesh");
+                    return {
+                        fillColor: isBgd ? "#0284C7" : "#1B2A4A",
+                        weight: isBgd ? 2.5 : 1,
+                        opacity: isBgd ? 0.95 : 0.6,
+                        color: isBgd ? "#38BDF8" : "#334E68",
+                        fillOpacity: isBgd ? 0.4 : 0.2
+                    };
+                });
+            }
+            map.invalidateSize();
+        }
+        window.switchBaseLayer = setTileLayer;
+
+        // Initial default earthquakes fallback if loaded before Android sends data
+        renderEarthquakes([
+            { id: "e1", lat: 24.01, lon: 90.42, mag: 3.2, place: "24 km N of Gazipur, Bangladesh", dist: 28, depth: 12 },
+            { id: "e2", lat: 24.89, lon: 91.86, mag: 4.1, place: "Sylhet Sadar Basin, Bangladesh", dist: 175, depth: 18 },
+            { id: "e3", lat: 23.12, lon: 93.45, mag: 5.4, place: "Myanmar-Chittagong Border Region", dist: 310, depth: 45 },
+            { id: "e4", lat: 19.80, lon: 89.20, mag: 4.8, place: "Bay of Bengal Submarine Trench", dist: 430, depth: 22 },
+            { id: "e5", lat: 27.71, lon: 85.32, mag: 5.8, place: "Kathmandu Valley Fault, Nepal", dist: 640, depth: 15 },
+            { id: "e6", lat: 35.67, lon: 139.65, mag: 6.1, place: "Tokyo Bay Subduction Zone, Japan", dist: 4900, depth: 35 },
+            { id: "e7", lat: -6.12, lon: 129.50, mag: 6.2, place: "Banda Sea, Indonesia", dist: 5200, depth: 110 }
+        ]);
+    </script>
+</body>
+</html>
