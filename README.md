@@ -102,6 +102,8 @@ The complete firmware is organized in the `firmware/` directory and requires no 
 6. Connect the ESP32 via USB and select the corresponding COM port.
 7. Click **Upload**. If the output displays `Connecting........_____`, hold the **BOOT** button on the ESP32 for 2 seconds.
 
+(Mahir's simple job) 
+
 ---
 
 ## Android Architecture
