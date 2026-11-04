@@ -14,7 +14,7 @@
 
 The compiled Android application package is ready for direct installation on phones and tablets.
 
-- **Direct Download Link:** [Download SeismicGuard v1.8 APK](apks/SeismicGuard-v1.8-phone-ready.apk?raw=true)
+- **Direct Download Link:** [Download SeismicGuard v1.8 APK](https://release-assets.githubusercontent.com/github-production-release-asset/1441410787/88c9b609-02ab-4f03-a7e5-8130ce793553?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-11-04T16%3A08%3A50Z&rscd=attachment%3B+filename%3DSeismicGuard-v1.8-phone-ready.apk&rsct=application%2Fvnd.android.package-archive&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-11-04T15%3A07%3A56Z&ske=2026-11-04T16%3A08%3A50Z&sks=b&skv=2018-11-09&sig=iSnO9VanEioqMax8YktQN2xkwVJFGuszfZrL56cwEIA%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc5MzgwNjY3NywibmJmIjoxNzkzODA0ODc3LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.erwXoUDOruvHA-l23M0e_mrtyy2aZqjTsX4aJurGaPE&response-content-disposition=attachment%3B%20filename%3DSeismicGuard-v1.8-phone-ready.apk&response-content-type=application%2Fvnd.android.package-archive )
 - **Repository Location:** `apks/SeismicGuard-v1.8-phone-ready.apk`
 - **Application ID:** `com.aistudio.seismicguard.omega`
 - **Version:** `1.8` (Build `9`)
@@ -23,7 +23,7 @@ The compiled Android application package is ready for direct installation on pho
 
 ### How to Install the APK
 
-1. Click the download link above or navigate to the `apks` folder and download `SeismicGuard-v1.8-phone-ready.apk`.
+1. Click the download link above or navigate to the releases section and download `SeismicGuard-v1.8-phone-ready.apk`.
 2. Open the downloaded file on your Android device.
 3. If prompted by Android Security, toggle **Allow from this source** (or **Install unknown apps**).
 4. Tap **Install** and launch **SeismicGuard**.
