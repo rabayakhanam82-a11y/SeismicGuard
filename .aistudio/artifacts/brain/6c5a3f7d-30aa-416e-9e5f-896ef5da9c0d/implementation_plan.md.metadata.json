@@ -1,6 +1,0 @@
-{
-  "summary":  "Comprehensive update to the ESP32 setup section and C++ firmware code:\n- Updated ESP32 firmware source code (app/src/main/assets/ESP32FirmwareReference.ino) with 100% production-ready, universal Arduino C++ compatible with ESP32 Core v2.x and v3.x (zero external third-party ZIPs required, using standard <WiFi.h>, <WebServer.h>, <HTTPClient.h>, <WiFiClientSecure.h>).\n- Integrated dual SoftAP ('SeismicGuard_AP' at 192.168.4.1) and Station Wi-Fi with mDNS (http://seismicguard.local) and sub-15ms IRAM_ATTR edge interrupt for the SW-420 sensor on GPIO 18, BC547 2.4kHz buzzer on GPIO 23, and alert LED on GPIO 22.\n- Enhanced the setup wizard in Esp32ConnectGuide.kt with a prominent Step 1 C++ firmware code card, 1-click clipboard copy, Arduino IDE configuration checklist, interactive ping tests, and diagnostic controls.\n- Enforced bold, high-contrast Compose typography (20sp/22sp) for the SEISMICGUARD brand title in both the top middle CenterAlignedTopAppBar and menu drawer, completely eliminating the microscopic vector rendering issue.",
-  "updatedAt":  "2026-10-28T03:31:23.759565413Z",
-  "requestFeedback":  true,
-  "userFacing":  true
-}
