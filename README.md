@@ -4,8 +4,11 @@
 **Bangladesh International School (BIS) Science Exhibition 2026**  
 **Academic Section:** Class 7 English Version (EV)  
 **Project Lead:** Abdullah Karim 
+
 **App and Code:** Abdullah Karim
+
 **Hardware Team:** Mahir,Behan
+
 **Presentation:** Ahmed, zarif
 
 ---
