@@ -5,8 +5,8 @@
 **Academic Section:** Class 7 English Version (EV)  
 **Project Lead:** Abdullah Karim                               
 **App and Code:** Abdullah Karim               
-**Hardware Team:** Mahir,Behan           
-**Presentation:** Ahmed, Zarif          
+**Hardware Team:** Abdullah,Mahir,Behan           
+**Presentation:** Abdullah,Ahmed,Zarif          
 
 ---
 
