@@ -133,6 +133,6 @@ The resulting debug APK will be located in `app/build/outputs/apk/debug/app-debu
 ## Team Credits
 
 - **Project Lead & Architecture:** Abdullah Karim (Class 7 English Version)
-- **Circuit Assembly & Diagnostics:** Mahir, Ahmad
-- **Testing & Presentation:** Behan, Zarif
-- **Institution:** Bangladesh International School (BIS) Science Exhibition 2026
+- **Circuit Assembly & Diagnostics:** Abdullah, Mahir
+- **Testing & Presentation:** Abdullah, Ahmed, Zarif
+- **Institution:** Bangladesh International School (BIS) Capstone Science Exhibition 2026
