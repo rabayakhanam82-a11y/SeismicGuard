@@ -136,5 +136,5 @@ The resulting debug APK will be located in `app/build/outputs/apk/debug/app-debu
 
 - **Project Lead & Architecture:** Abdullah Karim (Class 7 English Version)
 - **Circuit Assembly & Diagnostics:** Abdullah, Mahir
-- **Testing & Presentation:** Abdullah, Ahmed, Zarif
+- **Testing & Presentation:** Abdullah, Ahmed, Zarif, Behan
 - **Institution:** Bangladesh International School (BIS) Capstone Science Exhibition 2026
