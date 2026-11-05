@@ -27,7 +27,7 @@ The images below are stored in the `app/` directory.
 
 A phone-ready APK is available in the repository:
 
-- [Download SeismicGuard v1.8 APK](apks/SeismicGuard-v1.8-phone-ready.apk)
+- [Download SeismicGuard v1.8 APK](https://github.com/rabayakhanam82-a11y/SeismicGuard/releases/download/App-PreRealase-IoT-Final/SeismicGuard-v1.8-phone-ready.apk)
 - **Application ID:** `com.aistudio.seismicguard.omega`
 - **Version:** `1.8` (build `9`)
 - **Android support:** Android 7.0 (API 24) and later
