@@ -1,140 +1,116 @@
 # SeismicGuard Omega
 
-**IoT Early Earthquake & Tremor Alarm System**  
+[![Android](https://img.shields.io/badge/Platform-Android-3DDC84?logo=android&logoColor=white)](https://developer.android.com/)
+[![Kotlin](https://img.shields.io/badge/Language-Kotlin-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org/)
+[![Android API](https://img.shields.io/badge/Android_API-24%2B-3DDC84?logo=android&logoColor=white)](https://developer.android.com/about/versions)
+[![Version](https://img.shields.io/badge/App_version-1.8-blue)](https://github.com/rabayakhanam82-a11y/SeismicGuard)
+
+SeismicGuard is a student-built seismic and vibration monitoring project that pairs an ESP32 sensor-and-siren unit with an Android companion app. The hardware detects repeated vibration pulses and sends status and alert events to Firebase Realtime Database; the app presents the incoming information and can show a prominent emergency alert.
+
+This is an educational prototype, not a certified earthquake-warning or life-safety system. It detects local vibration; it does not predict earthquakes. Do not rely on it as a substitute for official alerts or safety procedures.
+
 **Benchmark International School (BIS) Capstone Science Exhibition 2026**  
-**Academic Section:** Class 7 English Version (EV)  
-**Project Lead:** Abdullah Karim                               
-**App and Code:** Abdullah Karim               
-**Hardware Team:** Abdullah,Mahir,Behan           
-**Presentation:** Abdullah,Ahmed,Zarif          
+**Academic section:** Class 7 English Version (EV)  
+**Project lead and app/code:** Abdullah Karim  
+**Hardware team:** Abdullah, Mahir, Behan  
+**Presentation:** Abdullah, Ahmed, Zarif
 
----
+## App screenshots
 
-## Direct App Download
+The images below are stored in the `app/` directory.
 
-The compiled Android application package is ready for direct installation on phones and tablets.
+| SeismicGuard app | SeismicGuard app | SeismicGuard app | SeismicGuard app |
+| --- | --- | --- | --- |
+| ![SeismicGuard Android app screenshot](app/Screenshot_20261028_215325_SeismicGuard.jpg) | ![SeismicGuard Android app screenshot](app/Screenshot_20261028_215342_SeismicGuard.jpg) | ![SeismicGuard Android app screenshot](app/Screenshot_20261028_215359_SeismicGuard.jpg) | ![SeismicGuard Android app screenshot](app/Screenshot_20261028_215432_SeismicGuard.jpg) |
 
-- **Direct Download Link:** [Download SeismicGuard v1.8 APK](https://release-assets.githubusercontent.com/github-production-release-asset/1441410787/88c9b609-02ab-4f03-a7e5-8130ce793553?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-11-04T16%3A08%3A50Z&rscd=attachment%3B+filename%3DSeismicGuard-v1.8-phone-ready.apk&rsct=application%2Fvnd.android.package-archive&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-11-04T15%3A07%3A56Z&ske=2026-11-04T16%3A08%3A50Z&sks=b&skv=2018-11-09&sig=iSnO9VanEioqMax8YktQN2xkwVJFGuszfZrL56cwEIA%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc5MzgwNjY3NywibmJmIjoxNzkzODA0ODc3LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.erwXoUDOruvHA-l23M0e_mrtyy2aZqjTsX4aJurGaPE&response-content-disposition=attachment%3B%20filename%3DSeismicGuard-v1.8-phone-ready.apk&response-content-type=application%2Fvnd.android.package-archive )
-- **Repository Location:** `apks/SeismicGuard-v1.8-phone-ready.apk`
+## Download the Android app
+
+A phone-ready APK is available in the repository:
+
+- [Download SeismicGuard v1.8 APK](apks/SeismicGuard-v1.8-phone-ready.apk)
 - **Application ID:** `com.aistudio.seismicguard.omega`
-- **Version:** `1.8` (Build `9`)
-- **Compatibility:** Android 7.0 (Nougat, API 24) through Android 15 (API 36)
-- **Architecture:** Universal (ARM64-v8a, ARMeabi-v7a, x86_64)
+- **Version:** `1.8` (build `9`)
+- **Android support:** Android 7.0 (API 24) and later
+- **Package architecture:** Universal APK for ARM64, ARMv7, and x86_64 devices
 
-### How to Install the APK
+To install, download the APK on an Android device, open it, and allow installation from that source if Android asks. Grant notification permission when prompted so the app can deliver alerts.
 
-1. Click the download link above or navigate to the releases section and download `SeismicGuard-v1.8-phone-ready.apk`.
-2. Open the downloaded file on your Android device.
-3. If prompted by Android Security, toggle **Allow from this source** (or **Install unknown apps**).
-4. Tap **Install** and launch **SeismicGuard**.
-5. Grant Notification permissions when requested so that background seismic alerts can sound in real time.
+## How the system works
 
----
+The system has two main parts:
 
-## System Overview
+1. **ESP32 hardware:** An SW-420 vibration sensor connects to the ESP32. Firmware filters short vibration bursts and activates an acoustic buzzer when its pulse threshold is reached. It also sends telemetry and alert events to Firebase Realtime Database.
+2. **Android companion app:** The Kotlin app listens for Firebase telemetry and alert updates, provides a ground-safety dashboard, retrieves weather information, and can display an emergency alert with sound and vibration.
 
-SeismicGuard Omega is an integrated hardware and software seismic monitoring system. It combines an on-site ESP32 microcontroller with a calibrated SW-420 high-sensitivity vibration sensor, a BC547-driven acoustic emergency siren, and real-time cloud synchronization via Firebase Realtime Database. 
+The firmware's current pulse filter is configured for four rapid sensor pulses within 250 milliseconds, with a cooldown between alarms. Actual sensitivity depends on the sensor module, its potentiometer adjustment, mounting, and the surface it is attached to; test and calibrate the complete setup before demonstrations.
 
-When ground tremors or strong mechanical vibrations are detected, the system immediately sounds a local acoustic alarm and broadcasts low-latency telemetry to all connected Android mobile stations within 15 milliseconds.
+### App capabilities
 
-### Core Capabilities
+- Live hardware status and alert updates through Firebase Realtime Database.
+- Prominent emergency alert screen, including vibration and audible alert behavior.
+- Weather information with automatic refresh on app launch and pull-to-refresh on the dashboard.
+- Kotlin, Jetpack Compose, and Material 3 user interface.
+- Reactive state updates using Kotlin Coroutines and lifecycle-aware state collection.
+- Weather requests handled through Retrofit and OkHttp.
 
-- **Real-Time Tremor Detection:** Uses hardware interrupts (`FALLING` edge) on GPIO 18 to capture rapid mechanical oscillations.
-- **Accidental Bump Filtering:** A sliding window algorithm requires 4 rapid bounces within 250 milliseconds, preventing false alarms from light surface touches or desk bumps while responding to a firm, deliberate shake.
-- **Audible Siren System:** BC547 NPN transistor powers a high-output acoustic buzzer on GPIO 23 with swept-frequency audio alerts (2000 Hz to 3200 Hz).
-- **Sub-15ms Cloud Dispatch:** Transmits emergency packets and telemetry over HTTPS directly to Firebase Realtime Database.
-- **Full-Screen Emergency Override:** The companion Android application triggers a persistent, high-visibility emergency alert screen with tactile vibration patterns and override audio.
-- **Dynamic Weather & Meteorological Engine:** Live weather monitoring with swipe-down pull-to-refresh and automatic update on every app launch.
+## Hardware configuration
 
----
+The documented circuit uses an acoustic buzzer driven by a BC547 NPN transistor; it does not use a red LED.
 
-## Hardware Configuration
+| Component | Pin or terminal | ESP32 connection | Notes |
+| --- | --- | --- | --- |
+| SW-420 vibration sensor | `VCC` | `3V3` | 3.3 V supply |
+| SW-420 vibration sensor | `GND` | `GND` | Common ground |
+| SW-420 vibration sensor | `DO` | `GPIO 18` | Digital interrupt input (`INPUT_PULLUP`) |
+| BC547 NPN transistor | Base (pin 2) | `GPIO 23` | Through a 1 kΩ resistor |
+| BC547 NPN transistor | Collector (pin 1) | Buzzer `(-)` | Switched ground |
+| BC547 NPN transistor | Emitter (pin 3) | `GND` | Common ground |
+| 9042 acoustic buzzer | Positive `(+)` | `3V3` | Power rail |
 
-There is no red LED in this circuit. The system uses a dedicated acoustic buzzer driven by an NPN transistor for maximum audible warning volume.
+### Calibrate the vibration sensor
 
-### Wiring Reference Table
+The SW-420 module has an onboard potentiometer. With the hardware powered and resting on a stable surface, adjust it until the sensor's status LED stays off while still. Test with deliberate movement and make small adjustments until the setup responds as intended. Sensor thresholds vary between modules and installations.
 
-| Component | Pin / Terminal | ESP32 Pin | Wiring Description |
-| :--- | :--- | :--- | :--- |
-| **SW-420 Vibration Sensor** | `VCC` | `3V3` | 3.3V DC power rail |
-| **SW-420 Vibration Sensor** | `GND` | `GND` | Common ground rail |
-| **SW-420 Vibration Sensor** | `DO` | `GPIO 18` | Digital interrupt input (`INPUT_PULLUP`) |
-| **BC547 NPN Transistor** | Base (Pin 2) | `GPIO 23` | Connected through a 1k Ohm base resistor |
-| **BC547 NPN Transistor** | Collector (Pin 1) | Buzzer `(-)` | Switched ground terminal for buzzer |
-| **BC547 NPN Transistor** | Emitter (Pin 3) | `GND` | Common ground rail |
-| **9042 Acoustic Buzzer** | Positive `(+)` | `3V3` | 3.3V power bus |
+## ESP32 firmware
 
-### Sensor Calibration
+The `firmware/` directory contains the Arduino sketch and setup guides:
 
-The SW-420 sensor module features an onboard blue potentiometer with a brass adjustment screw:
+- `firmware/SeismicGuard_ESP32.ino` — primary ESP32 sketch.
+- `firmware/ESP32_CODE_COPY_PASTE.txt` — plain-text copy of the firmware.
+- `firmware/INSTRUCTIONS_ARDUINO_IDE.txt` — Arduino IDE flashing instructions.
+- [Firmware and hardware guide](firmware/README.md)
 
-1. Connect the ESP32 to power and observe the sensor status LED.
-2. While resting still on a flat surface, the status LED should remain OFF.
-3. If the LED stays ON continuously while still, turn the brass screw counter-clockwise until the LED turns OFF.
-4. Give the sensor a firm, deliberate shake. The LED will flash rapidly and the buzzer will trigger the emergency sequence.
+### Flash the firmware
 
----
+1. Open the sketch in Arduino IDE 2.0 or later.
+2. Select **ESP32 Dev Module** or **DOIT ESP32 DEVKIT V1** and the board's serial port.
+3. Set your Wi-Fi credentials in the sketch. Do not commit personal credentials to a public repository.
+4. Check the Firebase Realtime Database host and project configuration for your deployment.
+5. Connect the ESP32 and upload. If the board remains at `Connecting`, hold its **BOOT** button as the IDE connects.
 
-## ESP32 Firmware
+The firmware uses the Firebase Realtime Database host documented in the sketch and README. Configure access rules appropriately for your own Firebase project before deploying; never treat an open database as secure.
 
-The complete firmware is organized in the `firmware/` directory and requires no external third-party libraries.
+## Build the Android app
 
-### Firmware Files
-
-- **`firmware/SeismicGuard_ESP32.ino`** — Primary Arduino sketch file.
-- **`firmware/ESP32_CODE_COPY_PASTE.txt`** — Plain-text version for quick copying without opening subfolders.
-- **`firmware/INSTRUCTIONS_ARDUINO_IDE.txt`** — Detailed flashing manual.
-
-### Required Setup Steps
-
-1. Open Arduino IDE (version 2.0 or higher).
-2. Open `firmware/SeismicGuard_ESP32.ino` or paste the contents into a new sketch.
-3. In `Tools -> Board`, select **ESP32 Dev Module** (or **DOIT ESP32 DEVKIT V1**).
-4. Update the Wi-Fi credentials in lines 38 and 41:
-   ```cpp
-   const char* WIFI_SSID     = "YOUR_WIFI_NAME_HERE";
-   const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD_HERE";
-   ```
-5. Ensure the Firebase Host is configured:
-   ```cpp
-   const char* FIREBASE_HOST = "https://seismic-guard-default-rtdb.asia-southeast1.firebasedatabase.app";
-   ```
-6. Connect the ESP32 via USB and select the corresponding COM port.
-7. Click **Upload**. If the output displays `Connecting........_____`, hold the **BOOT** button on the ESP32 for 2 seconds.
-
-(Mahir's simple job) 
-
----
-
-## Android Architecture
-
-The mobile application is built using modern Android Jetpack Compose and Clean Architecture principles:
-
-- **Jetpack Compose & Material 3:** Adaptive layout supporting phones, foldables, and tablets with dynamic theming.
-- **State Management:** Kotlin Coroutines, `StateFlow`, and `collectAsStateWithLifecycle` for non-blocking reactive UI updates.
-- **Network & Cloud Client:** Firebase Realtime Database SDK paired with OkHttp and Retrofit for weather forecasting data.
-- **Full-Screen Intent:** `EmergencyAlertActivity` with system-level lock screen display privileges (`setShowWhenLocked`, `setTurnScreenOn`).
-- **Telemetry Listener:** Active snapshot listener attached to `/telemetry` and `/alerts` endpoints.
-
----
-
-## Building from Source
-
-To build the Android project locally:
+Requirements: Android Studio or a compatible Gradle installation and Android SDK 36. Clone this repository and build the debug variant:
 
 ```bash
-git clone https://github.com/your-username/seismicguard.git
-cd seismicguard
+git clone https://github.com/rabayakhanam82-a11y/SeismicGuard.git
+cd SeismicGuard
 gradle assembleDebug
 ```
 
-The resulting debug APK will be located in `app/build/outputs/apk/debug/app-debug.apk`.
+The debug APK is written to `app/build/outputs/apk/debug/app-debug.apk`. The project uses a `.env.example` template for configuration; provide any required local settings without committing secrets.
 
----
+## Project structure
 
-## Team Credits
+- `app/` — Android application source and app screenshots.
+- `firmware/` — ESP32 Arduino firmware and hardware setup documentation.
+- `apks/` — phone-ready Android APK and download notes.
 
-- **Project Lead & Architecture:** Abdullah Karim (Class 7 English Version)
-- **Circuit Assembly & Diagnostics:** Abdullah, Mahir
-- **Testing & Presentation:** Abdullah, Ahmed, Zarif, Behan
+## Team credits
+
+- **Project lead and architecture:** Abdullah Karim
+- **Circuit assembly and diagnostics:** Abdullah, Mahir
+- **Testing and presentation:** Abdullah, Ahmed, Zarif, Behan
 - **Institution:** Bangladesh International School (BIS) Capstone Science Exhibition 2026
